@@ -74,7 +74,7 @@ export function DashboardClient({ userRole }: DashboardClientProps) {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Link href="/admin/users">
+            <Link href="/dashboard/admin/users">
               <Button className="w-full" variant="destructive">
                 Manage Users
               </Button>
