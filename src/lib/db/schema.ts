@@ -8,6 +8,24 @@ import {
 
 export const roleEnum = pgEnum("user_role", ["admin", "staff", "readonly"]);
 
+export const companyTypeEnum = pgEnum("company_type", [
+  "developer",
+  "contractor", 
+  "architect_consultant",
+  "supplier_vendor"
+]);
+
+export const contactRoleEnum = pgEnum("contact_role", [
+  "primary_contact",
+  "project_manager",
+  "technical_lead",
+  "finance_contact",
+  "sales_contact",
+  "support_contact",
+  "executive",
+  "other"
+]);
+
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
@@ -69,10 +87,53 @@ export const verification = pgTable("verification", {
   ),
 });
 
+export const company = pgTable("company", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  type: companyTypeEnum("type").notNull(),
+  description: text("description"),
+  website: text("website"),
+  phone: text("phone"),
+  email: text("email"),
+  address: text("address"),
+  city: text("city"),
+  state: text("state"),
+  zipCode: text("zip_code"),
+  country: text("country"),
+  createdAt: timestamp("created_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+});
+
+export const contact = pgTable("contact", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone"),
+  role: contactRoleEnum("role").notNull(),
+  title: text("title"),
+  department: text("department"),
+  notes: text("notes"),
+  companyId: text("company_id")
+    .notNull()
+    .references(() => company.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+});
+
 
 export const schema = {
   user,
   session,
   account,
   verification,
+  company,
+  contact,
 }

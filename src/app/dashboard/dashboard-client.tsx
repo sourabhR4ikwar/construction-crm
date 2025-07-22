@@ -30,17 +30,32 @@ export function DashboardClient({ userRole }: DashboardClientProps) {
         </CardContent>
       </Card>
 
-      {/* Companies & Contacts - Available to all authenticated users */}
+      {/* Companies - Available to all authenticated users */}
       <Card>
         <CardHeader>
-          <CardTitle>Companies & Contacts</CardTitle>
+          <CardTitle>Companies</CardTitle>
           <CardDescription>
-            Manage companies and their contacts
+            Manage companies and contractors
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Link href="/companies">
+          <Link href="/dashboard/companies">
             <Button className="w-full">View Companies</Button>
+          </Link>
+        </CardContent>
+      </Card>
+
+      {/* Contacts - Available to all authenticated users */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Contacts</CardTitle>
+          <CardDescription>
+            Manage company contacts and their information
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Link href="/dashboard/contacts">
+            <Button className="w-full">View Contacts</Button>
           </Link>
         </CardContent>
       </Card>
