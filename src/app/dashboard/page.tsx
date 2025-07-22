@@ -1,6 +1,8 @@
 import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
+import { ROLE_LABELS, UserRole } from "@/lib/auth-utils"
+import { DashboardClient } from "./dashboard-client"
 
 export default async function DashboardPage() {
   const session = await auth.api.getSession({
@@ -11,10 +13,22 @@ export default async function DashboardPage() {
     redirect("/login")
   }
 
+  const user = session.user
+  const userRole = (user.role as UserRole) || "readonly"
+
   return (
     <div className="container mx-auto py-10">
-      <h1 className="text-4xl font-bold mb-4">Dashboard</h1>
-      <p className="text-lg">Welcome, {session.user.name || session.user.email}!</p>
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold mb-2">Dashboard</h1>
+        <p className="text-lg text-muted-foreground">
+          Welcome, {user.name || user.email}!
+        </p>
+        <p className="text-sm text-muted-foreground">
+          Role: <span className="font-medium">{ROLE_LABELS[userRole]}</span>
+        </p>
+      </div>
+      
+      <DashboardClient userRole={userRole} />
     </div>
   )
 }

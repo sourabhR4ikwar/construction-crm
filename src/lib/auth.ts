@@ -22,6 +22,26 @@ export const auth = betterAuth({
       generateId: () => uuidv4()
     }
   },
+  session: {
+    updateAge: 1000 * 60 * 60 * 24, // 24 hours
+    expiresIn: 1000 * 60 * 60 * 24 * 30, // 30 days
+  },
+  user: {
+    additionalFields: {
+      role: {
+        type: "string",
+        defaultValue: "readonly",
+        input: false,
+        returned: true, // Make sure role is returned in session
+      }
+    },
+    changeEmail: {
+      enabled: true,
+    },
+    changePassword: {
+      enabled: true,
+    }
+  },
   plugins: [
     nextCookies(), // make sure this is the last plugin
   ]

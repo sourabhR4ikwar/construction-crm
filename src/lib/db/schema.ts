@@ -3,7 +3,10 @@ import {
   text,
   timestamp,
   boolean,
+  pgEnum,
 } from "drizzle-orm/pg-core";
+
+export const roleEnum = pgEnum("user_role", ["admin", "staff", "readonly"]);
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -13,6 +16,7 @@ export const user = pgTable("user", {
     .$defaultFn(() => false)
     .notNull(),
   image: text("image"),
+  role: roleEnum("role").default("readonly").notNull(),
   createdAt: timestamp("created_at")
     .$defaultFn(() => /* @__PURE__ */ new Date())
     .notNull(),
