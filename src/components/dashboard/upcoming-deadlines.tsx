@@ -7,7 +7,7 @@ interface UpcomingDeadlinesProps {
   deadlines: Array<{
     id: string;
     title: string;
-    endDate: Date;
+    endDate: Date | string;
     status: string;
     stage: string;
   }>;
@@ -27,9 +27,10 @@ export function UpcomingDeadlines({ deadlines }: UpcomingDeadlinesProps) {
     }
   };
 
-  const getDaysUntilDeadline = (endDate: Date) => {
+  const getDaysUntilDeadline = (endDate: Date | string) => {
     const today = new Date();
-    const diffTime = endDate.getTime() - today.getTime();
+    const deadlineDate = typeof endDate === 'string' ? new Date(endDate) : endDate;
+    const diffTime = deadlineDate.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays;
   };
@@ -76,7 +77,7 @@ export function UpcomingDeadlines({ deadlines }: UpcomingDeadlinesProps) {
                           {deadline.stage.replace('_', ' ')}
                         </span>
                         <span className="text-xs text-muted-foreground">
-                          {format(deadline.endDate, "MMM d, yyyy")}
+                          {format(typeof deadline.endDate === 'string' ? new Date(deadline.endDate) : deadline.endDate, "MMM d, yyyy")}
                         </span>
                       </div>
                     </div>
