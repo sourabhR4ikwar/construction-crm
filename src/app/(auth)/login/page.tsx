@@ -82,9 +82,9 @@ export default function LoginPage() {
   return (
     <Card>
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl">Sign in</CardTitle>
+        <CardTitle className="text-2xl font-semibold tracking-tight">Welcome back</CardTitle>
         <CardDescription>
-          Enter your email and password to sign in to your account
+          Sign in to your PowerTech Platform account
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -125,7 +125,7 @@ export default function LoginPage() {
               )}
             />
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Signing in..." : "Sign in"}
+              {isLoading ? "Signing in..." : "Continue"}
             </Button>
           </form>
         </Form>
@@ -137,7 +137,7 @@ export default function LoginPage() {
           </Link>
         </div>
         <div className="text-sm text-muted-foreground">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link href="/register" className="hover:underline">
             Sign up
           </Link>

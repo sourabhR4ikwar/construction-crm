@@ -134,25 +134,25 @@ function SidebarContent({ userRole, userName, userEmail, onNavClick }: SideDrawe
     <div className="flex flex-col h-full bg-card">
       {/* Header */}
       <div className="p-6 border-b">
-        <h2 className="text-xl font-bold">Construction CRM</h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          Navigate quickly to any section
+        <h2 className="text-lg font-semibold tracking-tight">PowerTech Platform</h2>
+        <p className="text-xs text-muted-foreground mt-1">
+          Construction management platform
         </p>
       </div>
 
       {/* User Info Section */}
       <div className="p-6 border-b">
         <div className="flex items-center gap-3">
-          <div className="h-12 w-12 bg-primary/10 rounded-full flex items-center justify-center">
-            <span className="text-lg font-semibold text-primary">
+          <div className="h-10 w-10 bg-primary/10 rounded-lg flex items-center justify-center">
+            <span className="text-sm font-semibold text-primary">
               {(userName || userEmail || "U").charAt(0).toUpperCase()}
             </span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-medium truncate">
+            <p className="text-sm font-medium truncate">
               {userName || userEmail}
             </p>
-            <p className="text-sm text-muted-foreground capitalize">
+            <p className="text-xs text-muted-foreground capitalize">
               {userRole} Access
             </p>
           </div>
@@ -161,9 +161,9 @@ function SidebarContent({ userRole, userName, userEmail, onNavClick }: SideDrawe
 
       <ScrollArea className="flex-1 overflow-auto">
         {/* Navigation Items */}
-        <nav className="p-6 pb-4 space-y-1">
-          <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-4 px-3">
-            Main Navigation
+        <nav className="p-4 pb-4 space-y-1">
+          <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 px-2">
+            Navigation
           </div>
           
           {filteredNavItems.slice(0, 4).map((item) => {
@@ -175,8 +175,8 @@ function SidebarContent({ userRole, userName, userEmail, onNavClick }: SideDrawe
                 key={item.href}
                 href={item.href}
                 onClick={onNavClick}
-                className={`flex items-center gap-3 px-3 py-3 rounded-lg text-sm transition-colors hover:bg-muted/50 ${
-                  isActive ? "bg-primary/10 text-primary font-medium" : ""
+                className={`flex items-center gap-3 px-2 py-2 rounded-md text-sm transition-colors hover:bg-accent/50 ${
+                  isActive ? "bg-accent text-accent-foreground font-medium" : ""
                 }`}
               >
                 <Icon className="h-4 w-4 flex-shrink-0" />

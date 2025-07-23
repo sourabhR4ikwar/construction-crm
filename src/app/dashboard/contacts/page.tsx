@@ -37,12 +37,12 @@ export default async function ContactsPage({ searchParams }: ContactsPageProps) 
   const contactsPromise = getContacts(filters)
 
   return (
-    <div className="container mx-auto py-10">
-      <div className="flex justify-between items-center mb-8">
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold">Contacts</h1>
-          <p className="text-muted-foreground">
-            Manage company contacts and their information
+          <h1 className="text-2xl font-semibold tracking-tight">Contacts</h1>
+          <p className="text-sm text-muted-foreground">
+            Manage contacts across all your projects
           </p>
         </div>
         <CreateContactDialog />

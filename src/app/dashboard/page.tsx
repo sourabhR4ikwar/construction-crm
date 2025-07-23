@@ -21,18 +21,25 @@ export default async function DashboardPage() {
   return (
     <>
       <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">Dashboard</h1>
-        <p className="text-lg text-muted-foreground">
-          Welcome, {user.name || user.email}!
-        </p>
-        <p className="text-sm text-muted-foreground">
-          Role: <span className="font-medium">{ROLE_LABELS[userRole]}</span>
-        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-semibold mb-1 tracking-tight">Good morning, {user.name?.split(' ')[0] || user.email}</h1>
+            <p className="text-base text-muted-foreground">
+              Here&apos;s what&apos;s happening with your projects today.
+            </p>
+          </div>
+          <div className="text-right">
+            <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium">
+              Your role
+            </p>
+            <p className="text-sm font-medium">{ROLE_LABELS[userRole]}</p>
+          </div>
+        </div>
       </div>
 
       {/* KPI Overview Section */}
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-6">Project Overview</h2>
+        <h2 className="text-lg font-semibold mb-4 tracking-tight">Overview</h2>
         <Suspense fallback={<DashboardOverviewSkeleton />}>
           <DashboardOverviewContent />
         </Suspense>

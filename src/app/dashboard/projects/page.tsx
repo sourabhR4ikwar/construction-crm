@@ -45,12 +45,12 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
   const projectsPromise = getProjects(filters)
 
   return (
-    <div className="container mx-auto py-10">
-      <div className="flex justify-between items-center mb-8">
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold">Projects</h1>
-          <p className="text-muted-foreground">
-            Manage construction projects and track progress
+          <h1 className="text-2xl font-semibold tracking-tight">Projects</h1>
+          <p className="text-sm text-muted-foreground">
+            Track and manage your construction projects
           </p>
         </div>
         <CreateProjectDialog />

@@ -24,7 +24,7 @@ export function DashboardLayout({
       />
       {/* Main content area - leave space for sidebar on desktop */}
       <main className="lg:pl-80">
-        <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 max-w-7xl">
+        <div className="px-6 py-8 max-w-6xl mx-auto">
           {children}
         </div>
       </main>
