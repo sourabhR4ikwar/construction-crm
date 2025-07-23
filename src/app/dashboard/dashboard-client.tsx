@@ -24,7 +24,7 @@ export function DashboardClient({ userRole }: DashboardClientProps) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Link href="/projects">
+          <Link href="/dashboard/projects">
             <Button className="w-full">View Projects</Button>
           </Link>
         </CardContent>

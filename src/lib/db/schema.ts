@@ -4,6 +4,8 @@ import {
   timestamp,
   boolean,
   pgEnum,
+  decimal,
+  date,
 } from "drizzle-orm/pg-core";
 
 export const roleEnum = pgEnum("user_role", ["admin", "staff", "readonly"]);
@@ -23,6 +25,39 @@ export const contactRoleEnum = pgEnum("contact_role", [
   "sales_contact",
   "support_contact",
   "executive",
+  "other"
+]);
+
+export const projectStageEnum = pgEnum("project_stage", [
+  "design",
+  "construction",
+  "hand_off"
+]);
+
+export const projectStatusEnum = pgEnum("project_status", [
+  "planning",
+  "active", 
+  "on_hold",
+  "completed"
+]);
+
+export const projectRoleEnum = pgEnum("project_role", [
+  "developer",
+  "client_stakeholder",
+  "contractor",
+  "architect_consultant",
+  "project_manager",
+  "supplier_vendor"
+]);
+
+export const interactionTypeEnum = pgEnum("interaction_type", [
+  "meeting",
+  "phone_call",
+  "email",
+  "site_visit",
+  "document_shared",
+  "milestone_update",
+  "issue_reported",
   "other"
 ]);
 
@@ -128,6 +163,70 @@ export const contact = pgTable("contact", {
     .notNull(),
 });
 
+export const project = pgTable("project", {
+  id: text("id").primaryKey(),
+  title: text("title").notNull(),
+  description: text("description"),
+  budget: decimal("budget", { precision: 15, scale: 2 }),
+  startDate: date("start_date"),
+  endDate: date("end_date"),
+  stage: projectStageEnum("stage").notNull().default("design"),
+  status: projectStatusEnum("status").notNull().default("planning"),
+  address: text("address"),
+  city: text("city"),
+  state: text("state"),
+  zipCode: text("zip_code"),
+  country: text("country"),
+  createdAt: timestamp("created_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  createdBy: text("created_by")
+    .notNull()
+    .references(() => user.id),
+});
+
+export const projectRoleAssignment = pgTable("project_role_assignment", {
+  id: text("id").primaryKey(),
+  projectId: text("project_id")
+    .notNull()
+    .references(() => project.id, { onDelete: "cascade" }),
+  contactId: text("contact_id")
+    .notNull()
+    .references(() => contact.id, { onDelete: "cascade" }),
+  role: projectRoleEnum("role").notNull(),
+  assignedAt: timestamp("assigned_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  assignedBy: text("assigned_by")
+    .notNull()
+    .references(() => user.id),
+});
+
+export const projectInteraction = pgTable("project_interaction", {
+  id: text("id").primaryKey(),
+  projectId: text("project_id")
+    .notNull()
+    .references(() => project.id, { onDelete: "cascade" }),
+  type: interactionTypeEnum("type").notNull(),
+  summary: text("summary").notNull(),
+  description: text("description"),
+  interactionDate: timestamp("interaction_date").notNull(),
+  contactId: text("contact_id")
+    .references(() => contact.id, { onDelete: "set null" }),
+  createdAt: timestamp("created_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  createdBy: text("created_by")
+    .notNull()
+    .references(() => user.id),
+});
+
 
 export const schema = {
   user,
@@ -136,4 +235,7 @@ export const schema = {
   verification,
   company,
   contact,
+  project,
+  projectRoleAssignment,
+  projectInteraction,
 }

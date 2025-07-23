@@ -20,11 +20,17 @@ export const auth = betterAuth({
   advanced: {
     database: {
       generateId: () => uuidv4()
+    },
+    defaultCookieOptions: {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 60 * 24 * 7 // 7 days in seconds
     }
   },
   session: {
-    updateAge: 1000 * 60 * 60 * 24, // 24 hours
-    expiresIn: 1000 * 60 * 60 * 24 * 30, // 30 days
+    updateAge: 1000 * 60 * 24, // 24 hours
+    expiresIn: 1000 * 60 * 24 * 7, // 7 days
   },
   user: {
     additionalFields: {
@@ -43,7 +49,7 @@ export const auth = betterAuth({
     }
   },
   plugins: [
-    nextCookies(), // make sure this is the last plugin
+    nextCookies(),
   ]
 });
 
