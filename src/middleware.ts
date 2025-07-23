@@ -2,8 +2,9 @@ import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
 export async function middleware(request: NextRequest) {
-  // Get the session token from cookies
-  const sessionToken = request.cookies.get("better-auth.session_token")?.value
+  // Get the session token from cookies - check both regular and secure cookie names
+  const sessionToken = request.cookies.get("better-auth.session_token")?.value || 
+                      request.cookies.get("__Secure-better-auth.session_token")?.value
 
   const isAuthPage = request.nextUrl.pathname.startsWith("/login") ||
     request.nextUrl.pathname.startsWith("/register") ||
