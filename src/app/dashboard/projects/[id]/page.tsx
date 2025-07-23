@@ -10,6 +10,7 @@ import { Calendar, DollarSign, MapPin, FileText } from "lucide-react"
 import { getProject, getProjectRoles, getProjectInteractions, getContacts } from "../actions"
 import { ProjectRolesTab } from "./project-roles-tab"
 import { ProjectInteractionsTab } from "./project-interactions-tab"
+import { ProjectDocumentsTab } from "./documents/project-documents-tab"
 import { ProjectStage } from "@/repo/project/project.repo"
 
 interface ProjectDetailPageProps {
@@ -155,11 +156,15 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
         </div>
       </div>
 
-      {/* Tabs for Roles and Interactions */}
+      {/* Tabs for Roles, Interactions, and Documents */}
       <Tabs defaultValue="roles" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="roles">Team & Roles</TabsTrigger>
           <TabsTrigger value="interactions">Activity & Timeline</TabsTrigger>
+          <TabsTrigger value="documents">
+            <FileText className="h-4 w-4 mr-2" />
+            Documents
+          </TabsTrigger>
         </TabsList>
         
         <TabsContent value="roles" className="space-y-4">
@@ -179,6 +184,12 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
               projectInteractionsPromise={projectInteractionsPromise}
               contactsPromise={contactsPromise}
             />
+          </Suspense>
+        </TabsContent>
+        
+        <TabsContent value="documents" className="space-y-4">
+          <Suspense fallback={<Skeleton className="h-64 w-full" />}>
+            <ProjectDocumentsTab projectId={params.id} />
           </Suspense>
         </TabsContent>
       </Tabs>

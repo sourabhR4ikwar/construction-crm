@@ -61,6 +61,23 @@ export const interactionTypeEnum = pgEnum("interaction_type", [
   "other"
 ]);
 
+export const documentTypeEnum = pgEnum("document_type", [
+  "drawings_plans",
+  "contracts",
+  "permits",
+  "reports",
+  "specifications",
+  "correspondence",
+  "photos",
+  "other"
+]);
+
+export const documentAccessLevelEnum = pgEnum("document_access_level", [
+  "public",
+  "project_members",
+  "admin_only"
+]);
+
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
@@ -227,6 +244,64 @@ export const projectInteraction = pgTable("project_interaction", {
     .references(() => user.id),
 });
 
+export const projectDocument = pgTable("project_document", {
+  id: text("id").primaryKey(),
+  projectId: text("project_id")
+    .notNull()
+    .references(() => project.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  description: text("description"),
+  type: documentTypeEnum("type").notNull(),
+  currentVersion: text("current_version").notNull().default("1"),
+  accessLevel: documentAccessLevelEnum("access_level").notNull().default("project_members"),
+  tags: text("tags"), // JSON array of tags
+  createdAt: timestamp("created_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  createdBy: text("created_by")
+    .notNull()
+    .references(() => user.id),
+});
+
+export const projectDocumentVersion = pgTable("project_document_version", {
+  id: text("id").primaryKey(),
+  documentId: text("document_id")
+    .notNull()
+    .references(() => projectDocument.id, { onDelete: "cascade" }),
+  version: text("version").notNull(),
+  fileName: text("file_name").notNull(),
+  fileSize: text("file_size").notNull(), // in bytes as string
+  mimeType: text("mime_type").notNull(),
+  storageKey: text("storage_key").notNull(), // R2 storage key
+  checksum: text("checksum"), // file hash for integrity
+  versionNotes: text("version_notes"),
+  createdAt: timestamp("created_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  uploadedBy: text("uploaded_by")
+    .notNull()
+    .references(() => user.id),
+});
+
+export const documentAccessLog = pgTable("document_access_log", {
+  id: text("id").primaryKey(),
+  documentId: text("document_id")
+    .notNull()
+    .references(() => projectDocument.id, { onDelete: "cascade" }),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  action: text("action").notNull(), // "view", "download", "share"
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
+  accessedAt: timestamp("accessed_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+});
+
 
 export const schema = {
   user,
@@ -238,4 +313,7 @@ export const schema = {
   project,
   projectRoleAssignment,
   projectInteraction,
+  projectDocument,
+  projectDocumentVersion,
+  documentAccessLog,
 }
