@@ -5,8 +5,10 @@ import { Suspense } from "react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Calendar, DollarSign, MapPin, FileText } from "lucide-react"
+import { Calendar, DollarSign, MapPin, FileText, ArrowLeft } from "lucide-react"
+import Link from "next/link"
 import { getProject, getProjectRoles, getProjectInteractions, getContacts } from "../actions"
 import { ProjectRolesTab } from "./project-roles-tab"
 import { ProjectInteractionsTab } from "./project-interactions-tab"
@@ -85,7 +87,17 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
   }
 
   return (
-    <div className="container mx-auto py-10">
+    <>
+      {/* Back Button */}
+      <div className="mb-6">
+        <Link href="/dashboard/projects">
+          <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground hover:text-foreground">
+            <ArrowLeft className="h-4 w-4" />
+            Back to Projects
+          </Button>
+        </Link>
+      </div>
+
       {/* Project Header */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
@@ -193,6 +205,6 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
           </Suspense>
         </TabsContent>
       </Tabs>
-    </div>
+    </>
   )
 }

@@ -1,6 +1,9 @@
 import { Suspense } from "react";
 import { ProjectDocumentsTab } from "./project-documents-tab";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 
 export default function ProjectDocumentsPage({
   params,
@@ -9,6 +12,16 @@ export default function ProjectDocumentsPage({
 }) {
   return (
     <div className="space-y-6">
+      {/* Back Button */}
+      <div>
+        <Link href={`/dashboard/projects/${params.id}`}>
+          <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground hover:text-foreground">
+            <ArrowLeft className="h-4 w-4" />
+            Back to Project Details
+          </Button>
+        </Link>
+      </div>
+
       <div>
         <h2 className="text-2xl font-bold tracking-tight">Project Documents</h2>
         <p className="text-muted-foreground">
