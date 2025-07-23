@@ -16,10 +16,11 @@ import { ProjectDocumentsTab } from "./documents/project-documents-tab"
 import { ProjectStage } from "@/repo/project/project.repo"
 
 interface ProjectDetailPageProps {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 export default async function ProjectDetailPage({ params }: ProjectDetailPageProps) {
+  const { id } = await params
   const session = await auth.api.getSession({
     headers: await headers(),
   })
@@ -30,13 +31,13 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
 
   let project
   try {
-    project = await getProject(params.id)
+    project = await getProject(id)
   } catch (error) {
     notFound()
   }
 
-  const projectRolesPromise = getProjectRoles(params.id)
-  const projectInteractionsPromise = getProjectInteractions(params.id)
+  const projectRolesPromise = getProjectRoles(id)
+  const projectInteractionsPromise = getProjectInteractions(id)
   const contactsPromise = getContacts()
 
   const getStageBadgeVariant = (stage: ProjectStage) => {
@@ -87,11 +88,11 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
   }
 
   return (
-    <>
+    <div className="space-y-8">
       {/* Back Button */}
-      <div className="mb-6">
+      <div>
         <Link href="/dashboard/projects">
-          <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground hover:text-foreground">
+          <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="h-4 w-4" />
             Back to Projects
           </Button>
@@ -99,69 +100,95 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
       </div>
 
       {/* Project Header */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h1 className="text-3xl font-bold">{project.title}</h1>
-            <p className="text-muted-foreground">
-              Created on {new Date(project.createdAt).toLocaleDateString('en-US')}
+      <div className="space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+          <div className="space-y-2">
+            <h1 className="text-4xl font-bold tracking-tight">{project.title}</h1>
+            <p className="text-sm text-muted-foreground">
+              Created on {new Date(project.createdAt).toLocaleDateString('en-US', {
+                weekday: 'short',
+                year: 'numeric', 
+                month: 'short',
+                day: 'numeric'
+              })}
             </p>
           </div>
-          <Badge variant={getStageBadgeVariant(project.stage)} className="text-sm">
+          <Badge 
+            variant={getStageBadgeVariant(project.stage)} 
+            className="text-sm px-3 py-1 font-medium self-start"
+          >
             {getStageLabel(project.stage)}
           </Badge>
         </div>
         
         {project.description && (
-          <p className="text-muted-foreground mb-6">{project.description}</p>
+          <div className="bg-muted/50 rounded-lg p-4 border-l-4 border-primary/20">
+            <p className="text-muted-foreground leading-relaxed">{project.description}</p>
+          </div>
         )}
 
         {/* Project Info Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Budget</CardTitle>
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <Card className="relative overflow-hidden border-0 shadow-sm bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-950/20 dark:to-green-900/10">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+              <CardTitle className="text-sm font-semibold text-green-700 dark:text-green-300">Budget</CardTitle>
+              <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-full">
+                <DollarSign className="h-4 w-4 text-green-600 dark:text-green-400" />
+              </div>
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{formatCurrency(project.budget)}</div>
+            <CardContent className="pb-4">
+              <div className="text-2xl font-bold text-green-900 dark:text-green-100">
+                {formatCurrency(project.budget)}
+              </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Start Date</CardTitle>
-              <Calendar className="h-4 w-4 text-muted-foreground" />
+          <Card className="relative overflow-hidden border-0 shadow-sm bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-950/20 dark:to-blue-900/10">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+              <CardTitle className="text-sm font-semibold text-blue-700 dark:text-blue-300">Start Date</CardTitle>
+              <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-full">
+                <Calendar className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+              </div>
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{formatDate(project.startDate)}</div>
+            <CardContent className="pb-4">
+              <div className="text-lg font-bold text-blue-900 dark:text-blue-100 leading-tight">
+                {formatDate(project.startDate)}
+              </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">End Date</CardTitle>
-              <Calendar className="h-4 w-4 text-muted-foreground" />
+          <Card className="relative overflow-hidden border-0 shadow-sm bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-950/20 dark:to-purple-900/10">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+              <CardTitle className="text-sm font-semibold text-purple-700 dark:text-purple-300">End Date</CardTitle>
+              <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-full">
+                <Calendar className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+              </div>
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{formatDate(project.endDate)}</div>
+            <CardContent className="pb-4">
+              <div className="text-lg font-bold text-purple-900 dark:text-purple-100 leading-tight">
+                {formatDate(project.endDate)}
+              </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Location</CardTitle>
-              <MapPin className="h-4 w-4 text-muted-foreground" />
+          <Card className="relative overflow-hidden border-0 shadow-sm bg-gradient-to-br from-orange-50 to-orange-100/50 dark:from-orange-950/20 dark:to-orange-900/10">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+              <CardTitle className="text-sm font-semibold text-orange-700 dark:text-orange-300">Location</CardTitle>
+              <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-full">
+                <MapPin className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+              </div>
             </CardHeader>
-            <CardContent>
-              <div className="text-sm">
+            <CardContent className="pb-4">
+              <div className="text-sm font-semibold text-orange-900 dark:text-orange-100">
                 {(project.city || project.state) ? 
                   [project.city, project.state].filter(Boolean).join(", ") : 
                   "Not specified"
                 }
               </div>
               {project.address && (
-                <div className="text-xs text-muted-foreground mt-1">{project.address}</div>
+                <div className="text-xs text-orange-700/70 dark:text-orange-300/70 mt-1.5 leading-relaxed">
+                  {project.address}
+                </div>
               )}
             </CardContent>
           </Card>
@@ -170,41 +197,45 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
 
       {/* Tabs for Roles, Interactions, and Documents */}
       <Tabs defaultValue="roles" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="roles">Team & Roles</TabsTrigger>
-          <TabsTrigger value="interactions">Activity & Timeline</TabsTrigger>
-          <TabsTrigger value="documents">
+        <TabsList className="grid w-full grid-cols-3 bg-muted/50 p-1 rounded-lg">
+          <TabsTrigger value="roles" className="data-[state=active]:bg-background data-[state=active]:shadow-sm font-medium">
+            Team & Roles
+          </TabsTrigger>
+          <TabsTrigger value="interactions" className="data-[state=active]:bg-background data-[state=active]:shadow-sm font-medium">
+            Activity & Timeline
+          </TabsTrigger>
+          <TabsTrigger value="documents" className="data-[state=active]:bg-background data-[state=active]:shadow-sm font-medium">
             <FileText className="h-4 w-4 mr-2" />
             Documents
           </TabsTrigger>
         </TabsList>
         
-        <TabsContent value="roles" className="space-y-4">
-          <Suspense fallback={<Skeleton className="h-64 w-full" />}>
+        <TabsContent value="roles" className="mt-6 space-y-6">
+          <Suspense fallback={<Skeleton className="h-64 w-full rounded-lg" />}>
             <ProjectRolesTab 
-              projectId={params.id}
+              projectId={id}
               projectRolesPromise={projectRolesPromise}
               contactsPromise={contactsPromise}
             />
           </Suspense>
         </TabsContent>
         
-        <TabsContent value="interactions" className="space-y-4">
-          <Suspense fallback={<Skeleton className="h-64 w-full" />}>
+        <TabsContent value="interactions" className="mt-6 space-y-6">
+          <Suspense fallback={<Skeleton className="h-64 w-full rounded-lg" />}>
             <ProjectInteractionsTab 
-              projectId={params.id}
+              projectId={id}
               projectInteractionsPromise={projectInteractionsPromise}
               contactsPromise={contactsPromise}
             />
           </Suspense>
         </TabsContent>
         
-        <TabsContent value="documents" className="space-y-4">
-          <Suspense fallback={<Skeleton className="h-64 w-full" />}>
-            <ProjectDocumentsTab projectId={params.id} />
+        <TabsContent value="documents" className="mt-6 space-y-6">
+          <Suspense fallback={<Skeleton className="h-64 w-full rounded-lg" />}>
+            <ProjectDocumentsTab projectId={id} />
           </Suspense>
         </TabsContent>
       </Tabs>
-    </>
+    </div>
   )
 }

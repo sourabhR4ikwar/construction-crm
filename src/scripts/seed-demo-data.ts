@@ -9,26 +9,26 @@ import {
   projectDocument,
   projectDocumentVersion 
 } from "@/lib/db/schema";
-import { nanoid } from "nanoid";
+import { v4 as uuid } from "uuid";
 
 // Demo users
 const demoUsers = [
   {
-    id: nanoid(),
+    id: uuid(),
     name: "John Smith",
     email: "john.smith@powertech.com",
     emailVerified: true,
     role: "admin" as const,
   },
   {
-    id: nanoid(),
+    id: uuid(),
     name: "Sarah Johnson",
     email: "sarah.johnson@powertech.com", 
     emailVerified: true,
     role: "staff" as const,
   },
   {
-    id: nanoid(),
+    id: uuid(),
     name: "Mike Davis",
     email: "mike.davis@powertech.com",
     emailVerified: true,
@@ -39,7 +39,7 @@ const demoUsers = [
 // Demo companies
 const demoCompanies = [
   {
-    id: nanoid(),
+    id: uuid(),
     name: "Metropolitan Development Corp",
     type: "developer" as const,
     description: "Leading residential and commercial property developer",
@@ -53,7 +53,7 @@ const demoCompanies = [
     country: "USA"
   },
   {
-    id: nanoid(),
+    id: uuid(),
     name: "BuildRight Construction",
     type: "contractor" as const,
     description: "Full-service construction company specializing in commercial projects",
@@ -67,7 +67,7 @@ const demoCompanies = [
     country: "USA"
   },
   {
-    id: nanoid(),
+    id: uuid(),
     name: "Urban Design Studio",
     type: "architect_consultant" as const,
     description: "Award-winning architectural firm",
@@ -81,7 +81,7 @@ const demoCompanies = [
     country: "USA"
   },
   {
-    id: nanoid(),
+    id: uuid(),
     name: "Premium Materials Supply",
     type: "supplier_vendor" as const,
     description: "High-quality construction materials supplier",
@@ -95,7 +95,7 @@ const demoCompanies = [
     country: "USA"
   },
   {
-    id: nanoid(),
+    id: uuid(),
     name: "Elite Contractors Inc",
     type: "contractor" as const,
     description: "Luxury residential construction specialists",
@@ -117,7 +117,7 @@ const generateContacts = (companies: typeof demoCompanies) => {
   companies.forEach((company, companyIndex) => {
     const companyContacts = [
       {
-        id: nanoid(),
+        id: uuid(),
         name: `Contact Primary ${companyIndex + 1}`,
         email: `primary${companyIndex + 1}@${company.name.toLowerCase().replace(/\s+/g, '')}.com`,
         phone: `(555) ${100 + companyIndex}${companyIndex}-${1000 + companyIndex}${companyIndex}`,
@@ -127,7 +127,7 @@ const generateContacts = (companies: typeof demoCompanies) => {
         companyId: company.id
       },
       {
-        id: nanoid(),
+        id: uuid(),
         name: `Manager ${companyIndex + 1}`,
         email: `manager${companyIndex + 1}@${company.name.toLowerCase().replace(/\s+/g, '')}.com`,
         phone: `(555) ${200 + companyIndex}${companyIndex}-${2000 + companyIndex}${companyIndex}`,
@@ -176,7 +176,7 @@ const generateProjects = (users: typeof demoUsers) => {
   const statuses = ["planning", "active", "on_hold", "completed"] as const;
 
   return projectNames.map((name, index) => ({
-    id: nanoid(),
+    id: uuid(),
     title: name,
     description: `${name} is a cutting-edge development project focusing on modern architecture and sustainable construction practices.`,
     budget: (Math.random() * 50000000 + 5000000).toFixed(2), // 5M to 55M
@@ -215,7 +215,7 @@ const generateInteractions = (projects: any[], contacts: any[], users: typeof de
     const numInteractions = Math.floor(Math.random() * 3) + 3;
     for (let i = 0; i < numInteractions; i++) {
       interactions.push({
-        id: nanoid(),
+        id: uuid(),
         projectId: project.id,
         type: interactionTypes[Math.floor(Math.random() * interactionTypes.length)],
         summary: summaries[Math.floor(Math.random() * summaries.length)],
@@ -249,7 +249,7 @@ const generateDocuments = (projects: any[], users: typeof demoUsers) => {
     // Generate 2-4 documents per project
     const numDocs = Math.floor(Math.random() * 3) + 2;
     for (let i = 0; i < numDocs; i++) {
-      const docId = nanoid();
+      const docId = uuid();
       documents.push({
         document: {
           id: docId,
@@ -263,14 +263,14 @@ const generateDocuments = (projects: any[], users: typeof demoUsers) => {
           createdBy: users[Math.floor(Math.random() * users.length)].id
         },
         version: {
-          id: nanoid(),
+          id: uuid(),
           documentId: docId,
           version: "1.0",
           fileName: `${documentNames[i % documentNames.length].toLowerCase().replace(/\s+/g, '-')}.pdf`,
           fileSize: (Math.random() * 10000000 + 100000).toString(), // 100KB to 10MB
           mimeType: "application/pdf",
           storageKey: `docs/${docId}/v1.0.pdf`,
-          checksum: nanoid(),
+          checksum: uuid(),
           versionNotes: "Initial version",
           uploadedBy: users[Math.floor(Math.random() * users.length)].id
         }
@@ -314,7 +314,7 @@ async function seedDemoData() {
       
       for (let i = 0; i < numAssignments && i < shuffledContacts.length; i++) {
         roleAssignments.push({
-          id: nanoid(),
+          id: uuid(),
           projectId: proj.id,
           contactId: shuffledContacts[i].id,
           role: projectRoles[i % projectRoles.length],

@@ -75,16 +75,17 @@ export function CreateProjectDialog() {
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="title">Project Title</Label>
+              <Input
+                id="title"
+                name="title"
+                placeholder="Enter project title"
+                required
+              />
+            </div>
+
             <div className="grid grid-cols-2 gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="title">Project Title</Label>
-                <Input
-                  id="title"
-                  name="title"
-                  placeholder="Enter project title"
-                  required
-                />
-              </div>
               <div className="grid gap-2">
                 <Label htmlFor="stage">Project Stage</Label>
                 <Select name="stage" required>
@@ -95,6 +96,20 @@ export function CreateProjectDialog() {
                     <SelectItem value="design">Design</SelectItem>
                     <SelectItem value="construction">Construction</SelectItem>
                     <SelectItem value="hand_off">Hand-off</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="status">Project Status</Label>
+                <Select name="status" required>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select project status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="planning">Planning</SelectItem>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="on_hold">On Hold</SelectItem>
+                    <SelectItem value="completed">Completed</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

@@ -20,7 +20,7 @@ interface SearchParams {
 }
 
 interface ProjectsPageProps {
-  searchParams: SearchParams
+  searchParams: Promise<SearchParams>
 }
 
 export default async function ProjectsPage({ searchParams }: ProjectsPageProps) {
@@ -32,14 +32,16 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
     redirect("/login")
   }
 
+  const params = await searchParams
+
   const filters = {
-    stage: searchParams.stage,
-    status: searchParams.status,
-    search: searchParams.search,
-    startDateFrom: searchParams.startDateFrom,
-    startDateTo: searchParams.startDateTo,
-    budgetMin: searchParams.budgetMin,
-    budgetMax: searchParams.budgetMax,
+    stage: params.stage,
+    status: params.status,
+    search: params.search,
+    startDateFrom: params.startDateFrom,
+    startDateTo: params.startDateTo,
+    budgetMin: params.budgetMin,
+    budgetMax: params.budgetMax,
   }
 
   const projectsPromise = getProjects(filters)
