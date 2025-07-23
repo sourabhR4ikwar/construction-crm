@@ -106,8 +106,7 @@ function SidebarContent({ userRole, userName, userEmail, onNavClick }: SideDrawe
       label: "Search",
       href: "/dashboard/search",
       icon: Search,
-      description: "Global search across all data",
-      badge: "Coming Soon"
+      description: "Global search across all data"
     },
     {
       label: "User Management",
