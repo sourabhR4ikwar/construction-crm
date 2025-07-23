@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Sheet,
   SheetContent,
@@ -16,6 +16,7 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { UserRole } from "@/lib/auth-utils";
+import { signOut } from "@/lib/auth-client";
 import {
   Menu,
   Home,
@@ -51,8 +52,18 @@ interface NavItem {
 // Reusable sidebar content component
 function SidebarContent({ userRole, userName, userEmail, onNavClick }: SideDrawerNavProps & { onNavClick?: () => void }) {
   const pathname = usePathname();
+  const router = useRouter();
   const isAdmin = userRole === "admin";
   const isStaff = userRole === "admin" || userRole === "staff";
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      router.push('/');
+    } catch (error) {
+      console.error('Failed to sign out:', error);
+    }
+  };
 
   const navItems: NavItem[] = [
     {
@@ -307,7 +318,7 @@ function SidebarContent({ userRole, userName, userEmail, onNavClick }: SideDrawe
           variant="ghost"
           size="sm"
           className="w-full justify-start gap-3 h-10 text-destructive hover:text-destructive hover:bg-destructive/10"
-          onClick={onNavClick}
+          onClick={handleSignOut}
         >
           <LogOut className="h-4 w-4" />
           Sign Out
